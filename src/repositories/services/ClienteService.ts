@@ -12,7 +12,21 @@ export default class ClienteService {
         cli.telefone = req.body.telefone;
         cli.aniversario = req.body.aniversario;
         cli.endereco = req.body.endereco;
-        const rs = await this.cliRepository.Cadastrar(cli);
-        return rs;
+        try {
+            const rs = await this.cliRepository.Cadastrar(cli);
+            return rs;
+        } catch (error) {
+            return res.status(500).json(error)
+        }
     }
+
+    async listarClientes(req:Request, res:Response){
+        try {
+            const rs = await this.cliRepository.Listar();
+            return res.status(200).json(rs)
+        } catch (erro) {
+            return res.status(500).json(erro)
+        }
+    }
+
 }
