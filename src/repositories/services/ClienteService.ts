@@ -4,6 +4,7 @@ import ClienteRepository from "../ClienteRepository";
 
 export default class ClienteService {
     cliRepository = new ClienteRepository();
+    
     async cadastroCliente(req:Request, res:Response){
         const cli:Cliente = new Cliente();
         cli.nome = req.body.nome;
