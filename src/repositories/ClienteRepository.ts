@@ -13,9 +13,10 @@ export default class ClienteRepository implements CommandsPessoa<Cliente>{
     }
     Cadastrar(obj: Cliente): Promise<Cliente> {
         return new Promise((resolve,reject) => {
-            //Amtes de cadastrar um cliente, yemos de cadastrar o endereco desse cliente, e
-            //então obtemos o id do endereca cadastro e alocamos em uma variável para
+            //Amtes de cadastrar um cliente, vemos de cadastrar o endereco desse cliente, e
+            //então obtemos o id do endereço cadastrado e alocamos em uma variável para
             //depois, inserir na tabela clientes, no campo "id_endereco"
+            let id_end:any;
             conexao.query("INSERT INTO endereco(tipo_logradouro, logradouro, numero, complemento, cep, bairro) Values (?,?,?,?,?,?)", (
                 obj.endereco.tipo_logradouro,
                 obj.endereco.logradouro,
@@ -23,15 +24,21 @@ export default class ClienteRepository implements CommandsPessoa<Cliente>{
                 obj.endereco.complemento,
                 obj.endereco.cep,
                 obj.endereco.bairro),
-                (erro,end)=>{}
-            )
+                (erro,end)=>{
+                    if(erro){
+                        return reject(erro);
+                    }else {
+                        // id_end = end.insertId
+                    }
+            
             conexao.query("INSERT INTO cliente SET ?", obj, (erro,result) => {
                 if(erro){
-                    return reject(erro)
+                    return reject(erro);
                 }else {
                     return resolve(obj);
                 }
             });
+        })
         })
     }
     Listar(): Promise<Cliente[]> {
