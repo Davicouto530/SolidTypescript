@@ -17,23 +17,30 @@ export default class ClienteRepository implements CommandsPessoa<Cliente>{
             //então obtemos o id do endereço cadastrado e alocamos em uma variável para
             //depois, inserir na tabela clientes, no campo "id_endereco"
             let id_end:any;
-            conexao.query("INSERT INTO endereco(tipo_logradouro, logradouro, numero, complemento, cep, bairro) Values (?,?,?,?,?,?)", (
+            conexao.query("INSERT INTO endereco(tipo_logradouro, logradouro, numero, complemento, cep, bairro) Values (?,?,?,?,?,?)", [
                 obj.endereco.tipo_logradouro,
                 obj.endereco.logradouro,
                 obj.endereco.numero,
                 obj.endereco.complemento,
                 obj.endereco.cep,
-                obj.endereco.bairro),
-                (erro,end)=>{
+                obj.endereco.bairro],
+                (erro,end:any)=>{
                     if(erro){
                         return reject(erro);
                     }else {
-                        // id_end = end.insertId
+                        id_end = end.insertId
                     }
             
-            conexao.query("INSERT INTO cliente SET ?", obj, (erro,result) => {
-                if(erro){
-                    return reject(erro);
+            conexao.query("INSERT INTO cliente (nome,cpf,email,telefone,id_endereco,aniversario) Values (?,?,?,?,?,?)",
+            [obj.nome,
+                obj.cpf,
+                obj.email,
+                obj.telefone,
+                id_end,
+                obj.aniversario],
+            (error,result) => {
+                if(error){
+                    return reject(error);
                 }else {
                     return resolve(obj);
                 }
